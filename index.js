@@ -11,9 +11,9 @@ const gravity = 0.7
 const background = new Sprite({
   position: {
     x: 0,
-    y: 0
+    y: -451
   },
-  imageSrc: './img/background.png'
+  imageSrc: 'img/background test.webp'
 })
 
 const shop = new Sprite({
@@ -21,7 +21,7 @@ const shop = new Sprite({
     x: 600,
     y: 128
   },
-  imageSrc: './img/shop.png',
+  imageSrc: '',
   scale: 2.75,
   framesMax: 6
 })
@@ -39,16 +39,16 @@ const player = new Fighter({
     x: 0,
     y: 0
   },
-  imageSrc: './img/samuraiMack/Idle.png',
+  imageSrc: 'img/Idle aqui bien.png',
   framesMax: 8,
-  scale: 2.5,
+  scale: 2.3,
   offset: {
     x: 215,
-    y: 157
+    y: 127
   },
   sprites: {
     idle: {
-      imageSrc: './img/samuraiMack/Idle.png',
+      imageSrc: 'img/Idle aqui bien.png',
       framesMax: 8
     },
     run: {
@@ -100,16 +100,16 @@ const enemy = new Fighter({
     x: -50,
     y: 0
   },
-  imageSrc: './img/kenji/Idle.png',
+  imageSrc: 'img/Idle Male 1 bien.png',
   framesMax: 4,
-  scale: 2.5,
+  scale: 2.3,
   offset: {
     x: 215,
-    y: 167
+    y: 127
   },
   sprites: {
     idle: {
-      imageSrc: './img/kenji/Idle.png',
+      imageSrc: 'img/Idle Male 1 bien.png',
       framesMax: 4
     },
     run: {
@@ -149,6 +149,25 @@ const enemy = new Fighter({
 
 console.log(player)
 
+// Control del menú de inicio
+const menuOverlay = document.getElementById('menu-overlay')
+const startGameBtn = document.getElementById('start-game-btn')
+const controlsBtn = document.getElementById('controls-btn')
+
+let gameStarted = false
+
+// Función para comenzar el juego
+startGameBtn.addEventListener('click', () => {
+  menuOverlay.classList.add('hidden')
+  gameStarted = true
+  animate()
+})
+
+// Muestra los controles al presionar el botón "Controls"
+controlsBtn.addEventListener('click', () => {
+  alert('Controls: Use arrow keys or WASD to move, space to attack.')
+})
+
 const keys = {
   a: {
     pressed: false
@@ -164,9 +183,8 @@ const keys = {
   }
 }
 
-decreaseTimer()
-
 function animate() {
+  if (!gameStarted) return
   window.requestAnimationFrame(animate)
   c.fillStyle = 'black'
   c.fillRect(0, 0, canvas.width, canvas.height)
@@ -180,8 +198,7 @@ function animate() {
   player.velocity.x = 0
   enemy.velocity.x = 0
 
-  // player movement
-
+  // Movimiento del jugador
   if (keys.a.pressed && player.lastKey === 'a') {
     player.velocity.x = -5
     player.switchSprite('run')
@@ -192,14 +209,14 @@ function animate() {
     player.switchSprite('idle')
   }
 
-  // jumping
+  // Saltar
   if (player.velocity.y < 0) {
     player.switchSprite('jump')
   } else if (player.velocity.y > 0) {
     player.switchSprite('fall')
   }
 
-  // Enemy movement
+  // Movimiento del enemigo
   if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
     enemy.velocity.x = -5
     enemy.switchSprite('run')
@@ -210,14 +227,14 @@ function animate() {
     enemy.switchSprite('idle')
   }
 
-  // jumping
+  // Saltar
   if (enemy.velocity.y < 0) {
     enemy.switchSprite('jump')
   } else if (enemy.velocity.y > 0) {
     enemy.switchSprite('fall')
   }
 
-  // detect for collision & enemy gets hit
+  // Detectar colisiones
   if (
     rectangularCollision({
       rectangle1: player,
@@ -234,12 +251,12 @@ function animate() {
     })
   }
 
-  // if player misses
+  // Si el jugador falla
   if (player.isAttacking && player.framesCurrent === 4) {
     player.isAttacking = false
   }
 
-  // this is where our player gets hit
+  // Donde el jugador recibe el golpe
   if (
     rectangularCollision({
       rectangle1: enemy,
@@ -256,18 +273,16 @@ function animate() {
     })
   }
 
-  // if player misses
+  // Si el enemigo falla
   if (enemy.isAttacking && enemy.framesCurrent === 2) {
     enemy.isAttacking = false
   }
 
-  // end game based on health
+  // Terminar juego basado en la salud
   if (enemy.health <= 0 || player.health <= 0) {
     determineWinner({ player, enemy, timerId })
   }
 }
-
-animate()
 
 window.addEventListener('keydown', (event) => {
   if (!player.dead) {
@@ -304,7 +319,6 @@ window.addEventListener('keydown', (event) => {
         break
       case 'ArrowDown':
         enemy.attack()
-
         break
     }
   }
@@ -320,7 +334,7 @@ window.addEventListener('keyup', (event) => {
       break
   }
 
-  // enemy keys
+  // teclas del enemigo
   switch (event.key) {
     case 'ArrowRight':
       keys.ArrowRight.pressed = false

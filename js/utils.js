@@ -26,12 +26,19 @@ let timer = 60
 let timerId
 function decreaseTimer() {
   if (timer > 0) {
-    timerId = setTimeout(decreaseTimer, 1000)
-    timer--
-    document.querySelector('#timer').innerHTML = timer
+    timerId = setTimeout(decreaseTimer, 1000);
+    timer--;
+    
+    const timerElement = document.querySelector('#timer');
+    if (timerElement) {
+      timerElement.innerHTML = timer;
+    } else {
+      console.error('Elemento con ID "timer" no encontrado en el DOM.');
+    }
   }
 
   if (timer === 0) {
-    determineWinner({ player, enemy, timerId })
+    determineWinner({ player, enemy, timerId });
   }
 }
+
