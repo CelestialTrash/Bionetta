@@ -1,9 +1,5 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-const gameSong = new Audio('Assets/BIONETTA MST v1.3 TP .mp3');
-gameSong.volume = 0.5; // Set volume (0 to 1)
-gameSong.loop = true;  // Make the song loop continuously
-
 
 
 canvas.width = 1024
@@ -373,7 +369,7 @@ window.addEventListener('keyup', (event) => {
 })
 
 // Cargar los sonidos
-const backgroundSound = new Audio('Sound/AbandonedChurch_BW.11598.wav');
+const backgroundSound = new Audio('Sound/AbandonedChurch_BW.11598.mp3');
 const startGameSound = new Audio('Sound/start-game-sound.wav');
 const hoverTitleSound = new Audio('Sound/Hover-title.wav');
 const buttonHoverSound = new Audio('Sound/botton-hover-sound.wav'); // Sonido para botones
