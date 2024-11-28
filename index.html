@@ -1,12 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bionetta</title>
+  <link rel="stylesheet" href="index.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="index.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Mina:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Mina', Courier, monospace;
       margin: 0;
       padding: 0;
+    }
+
+    #web-container {
+      visibility: hidden;
+    }
+
+    #game-menu.hidden + #web-container {
+      visibility: visible;
+    }
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 99%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.8);
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s ease;
+      z-index: 1004;
+    }
+
+    .modal.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background-color: rgb(0, 0, 0);
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    .modal-close {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background-color: #555;
     }
   </style>
 </head>
@@ -14,22 +85,29 @@
   <nav>
     <ul>
       <li><a href="#about">About</a></li>
-      <li><a href="#concept-art">Concept Art</a></li>
     </ul>
   </nav>
 
-  <!-- Menu overlay -->
-  <div id="menu-overlay">
-    <div class="menu">
-      <h1>Game Menu</h1>
-      <button id="start-game-btn">Start Game</button>
-      <button id="controls-btn">Controls</button>
-    </div>
+  <div id="game-menu">
+    <h1>Bionetta</h1>
+    <div id="start-game" class="menu-item">Start Game</div>
+    <div id="controls" class="menu-item">Controls</div>
   </div>
 
   <div id="web-container">
-    <!-- red container div -->
     <div style="position: relative; display: inline-block">
+      <div style="position: absolute; display: flex; width: 100%; align-items: center; padding: 20px;">
+        <div style="position: relative; width: 100%; display: flex; justify-content: flex-end; border-top: 4px solid white; border-left: 4px solid white; border-bottom: 4px solid white;">
+          <div style="background-color: red; height: 30px; width: 100%"></div>
+          <div id="playerHealth" style="position: absolute; background: #818cf8; top: 0; right: 0; bottom: 0; width: 100%;"></div>
+        </div>
+        <div id="timer" style="background-color: black; width: 100px; height: 50px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; border: 4px solid white;">60</div>
+        <div style="position: relative; width: 100%; border-top: 4px solid white; border-bottom: 4px solid white; border-right: 4px solid white;">
+          <div style="background-color: red; height: 30px;"></div>
+          <div id="enemyHealth" style="position: absolute; background: #818cf8; top: 0; right: 0; bottom: 0; left: 0;"></div>
+        </div>
+      </div>
+      <div id="displayText" style="position: absolute; color: white; align-items: center; justify-content: center; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;">Player 1 Wins!</div>
       <div id="canvas">
         <canvas></canvas>
       </div>
@@ -38,16 +116,61 @@
 
   <footer>
     <ul>
-      <li><a href="#aitana">Aitana</a></li>
-      <li><a href="#celestial-trash">Celestial Trash</a></li>
-      <li><a href="#aux1">AUX1</a></li>
-      <li><a href="#xyamm-angel">Xyamm Angel</a></li>
+      <li>
+        <a href="#aitana" target="_blank">
+          <img class='spotify-logo' src="Assets/spotify-logo-fill-svgrepo-com.svg" alt="Spotify" width="30" height="30">
+        </a>
+      </li>
+      <li>
+        <a href="#celestial-trash" target="_blank">
+          <img class="soundcloud-logo" src="Assets/soundcloud-svgrepo-com.svg" alt="SoundCloud" width="30" height="30">
+        </a>
+      </li>
+      <li>
+        <a href="#aux1" target="_blank">
+          <img src="Assets/youtube-168-svgrepo-com.svg" alt="YouTube" width="30" height="30">
+        </a>
+      </li>
+      <li>
+        <a href="#xyamm-angel" target="_blank">
+          <img class="bandcamp-logo" src="Assets/bandcamp-logo-svgrepo-com.svg" alt="Bandcamp" width="30" height="30">
+        </a>
+      </li>
     </ul>
   </footer>
 
+  <!-- Modal -->
+  <div id="controls-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Game Controls</h2>
+      <p><strong>Player 1:</strong> Movement: A, W, D | Attack: Space Bar</p>
+      <p><strong>Player 2:</strong> Movement: Arrow Left, Arrow Up, Arrow Right | Attack: Arrow Down</p>
+      <button id="close-controls" class="modal-close">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const controlsButton = document.getElementById('controls');
+    const controlsModal = document.getElementById('controls-modal');
+    const closeControlsButton = document.getElementById('close-controls');
+
+    controlsButton.addEventListener('click', () => {
+      controlsModal.classList.add('visible');
+    });
+
+    closeControlsButton.addEventListener('click', () => {
+      controlsModal.classList.remove('visible');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && controlsModal.classList.contains('visible')) {
+        controlsModal.classList.remove('visible');
+      }
+    });
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/classes.js"></script>
   <script src="index.js"></script>
 </body>
-
+</html>

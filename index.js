@@ -1,5 +1,10 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const gameSong = new Audio('Assets/BIONETTA MST v1.3 TP .mp3');
+gameSong.volume = 0.5; // Set volume (0 to 1)
+gameSong.loop = true;  // Make the song loop continuously
+
+
 
 canvas.width = 1024
 canvas.height = 576
@@ -39,12 +44,12 @@ const player = new Fighter({
     x: 0,
     y: 0
   },
-  imageSrc: 'img/Idle aqui bien.png',
+  imageSrc: 'img/FINAL AQUILES/Idle Aqui 1.png',
   framesMax: 8,
-  scale: 2.3,
+  scale: 2.0,
   offset: {
-    x: 215,
-    y: 127
+    x: 115,
+    y: 27
   },
   sprites: {
     idle: {
@@ -52,27 +57,27 @@ const player = new Fighter({
       framesMax: 8
     },
     run: {
-      imageSrc: './img/samuraiMack/Run.png',
+      imageSrc: 'img/FINAL AQUILES/Run Aqui 1.png',
       framesMax: 8
     },
     jump: {
-      imageSrc: './img/samuraiMack/Jump.png',
+      imageSrc: 'img/FINAL AQUILES/Jump Aqui 1.png',
       framesMax: 2
     },
     fall: {
-      imageSrc: './img/samuraiMack/Fall.png',
+      imageSrc: 'img/FINAL AQUILES/Fall Aqui 1.png',
       framesMax: 2
     },
     attack1: {
-      imageSrc: './img/samuraiMack/Attack1.png',
+      imageSrc: 'img/FINAL AQUILES/Attack2 Aqui 1.png',
       framesMax: 6
     },
     takeHit: {
-      imageSrc: './img/samuraiMack/Take Hit - white silhouette.png',
+      imageSrc: 'img/FINAL AQUILES/Take Hit - white silhouette Aqui 1.png',
       framesMax: 4
     },
     death: {
-      imageSrc: './img/samuraiMack/Death.png',
+      imageSrc: 'img/FINAL AQUILES/Death Aqui 1.png',
       framesMax: 6
     }
   },
@@ -98,14 +103,14 @@ const enemy = new Fighter({
   color: 'blue',
   offset: {
     x: -50,
-    y: 0
+    y: 100
   },
   imageSrc: 'img/Idle Male 1 bien.png',
   framesMax: 4,
-  scale: 2.3,
+  scale: 1.8,
   offset: {
     x: 215,
-    y: 127
+    y: 22
   },
   sprites: {
     idle: {
@@ -113,27 +118,27 @@ const enemy = new Fighter({
       framesMax: 4
     },
     run: {
-      imageSrc: './img/kenji/Run.png',
+      imageSrc: 'img/Run Male 9.png',
       framesMax: 8
     },
     jump: {
-      imageSrc: './img/kenji/Jump.png',
+      imageSrc: 'img/Jump Male 9.png',
       framesMax: 2
     },
     fall: {
-      imageSrc: './img/kenji/Fall.png',
+      imageSrc: 'img/Fall Male 9.png',
       framesMax: 2
     },
     attack1: {
-      imageSrc: './img/kenji/Attack1.png',
+      imageSrc: 'img/Attack1 Male 9.png',
       framesMax: 4
     },
     takeHit: {
-      imageSrc: './img/kenji/Take hit.png',
+      imageSrc: 'img/Take hit Male 99.png',
       framesMax: 3
     },
     death: {
-      imageSrc: './img/kenji/Death.png',
+      imageSrc: 'img/Death Male 9.png',
       framesMax: 7
     }
   },
@@ -148,25 +153,6 @@ const enemy = new Fighter({
 })
 
 console.log(player)
-
-// Control del menú de inicio
-const menuOverlay = document.getElementById('menu-overlay')
-const startGameBtn = document.getElementById('start-game-btn')
-const controlsBtn = document.getElementById('controls-btn')
-
-let gameStarted = false
-
-// Función para comenzar el juego
-startGameBtn.addEventListener('click', () => {
-  menuOverlay.classList.add('hidden')
-  gameStarted = true
-  animate()
-})
-
-// Muestra los controles al presionar el botón "Controls"
-controlsBtn.addEventListener('click', () => {
-  alert('Controls: Use arrow keys or WASD to move, space to attack.')
-})
 
 const keys = {
   a: {
@@ -183,8 +169,9 @@ const keys = {
   }
 }
 
+decreaseTimer()
+
 function animate() {
-  if (!gameStarted) return
   window.requestAnimationFrame(animate)
   c.fillStyle = 'black'
   c.fillRect(0, 0, canvas.width, canvas.height)
@@ -198,7 +185,8 @@ function animate() {
   player.velocity.x = 0
   enemy.velocity.x = 0
 
-  // Movimiento del jugador
+  // player movement
+
   if (keys.a.pressed && player.lastKey === 'a') {
     player.velocity.x = -5
     player.switchSprite('run')
@@ -209,14 +197,14 @@ function animate() {
     player.switchSprite('idle')
   }
 
-  // Saltar
+  // jumping
   if (player.velocity.y < 0) {
     player.switchSprite('jump')
   } else if (player.velocity.y > 0) {
     player.switchSprite('fall')
   }
 
-  // Movimiento del enemigo
+  // Enemy movement
   if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
     enemy.velocity.x = -5
     enemy.switchSprite('run')
@@ -227,14 +215,14 @@ function animate() {
     enemy.switchSprite('idle')
   }
 
-  // Saltar
+  // jumping
   if (enemy.velocity.y < 0) {
     enemy.switchSprite('jump')
   } else if (enemy.velocity.y > 0) {
     enemy.switchSprite('fall')
   }
 
-  // Detectar colisiones
+  // detect for collision & enemy gets hit
   if (
     rectangularCollision({
       rectangle1: player,
@@ -249,40 +237,79 @@ function animate() {
     gsap.to('#enemyHealth', {
       width: enemy.health + '%'
     })
+
+    // Reproducir sonido de impacto
+    celestialHitSound.currentTime = 0
+    celestialHitSound.play().catch((error) => {
+      console.error('Error al reproducir el sonido de impacto:', error)
+    })
   }
 
-  // Si el jugador falla
+  // if player misses
   if (player.isAttacking && player.framesCurrent === 4) {
     player.isAttacking = false
   }
 
-  // Donde el jugador recibe el golpe
-  if (
-    rectangularCollision({
-      rectangle1: enemy,
-      rectangle2: player
-    }) &&
-    enemy.isAttacking &&
-    enemy.framesCurrent === 2
-  ) {
-    player.takeHit()
-    enemy.isAttacking = false
+  // this is where our player gets hit
+  // detect for collision & enemy gets hit
+if (
+  rectangularCollision({
+    rectangle1: player,
+    rectangle2: enemy
+  }) &&
+  player.isAttacking &&
+  player.framesCurrent === 4
+) {
+  enemy.takeHit()
+  player.isAttacking = false
 
-    gsap.to('#playerHealth', {
-      width: player.health + '%'
-    })
-  }
+  gsap.to('#enemyHealth', {
+    width: enemy.health + '%'
+  })
 
-  // Si el enemigo falla
-  if (enemy.isAttacking && enemy.framesCurrent === 2) {
-    enemy.isAttacking = false
-  }
-
-  // Terminar juego basado en la salud
-  if (enemy.health <= 0 || player.health <= 0) {
-    determineWinner({ player, enemy, timerId })
-  }
+  // Reproducir sonido de impacto de Celestial
+  celestialHitSound.currentTime = 0
+  celestialHitSound.play().catch((error) => {
+    console.error('Error al reproducir el sonido de impacto de Celestial:', error)
+  })
 }
+
+// if player misses
+if (player.isAttacking && player.framesCurrent === 4) {
+  player.isAttacking = false
+}
+
+// this is where our player gets hit
+if (
+  rectangularCollision({
+    rectangle1: enemy,
+    rectangle2: player
+  }) &&
+  enemy.isAttacking &&
+  enemy.framesCurrent === 2
+) {
+  player.takeHit()
+  enemy.isAttacking = false
+
+  gsap.to('#playerHealth', {
+    width: player.health + '%'
+  })
+
+  // Reproducir sonido de impacto de Xyamm
+  xyammHitSound.currentTime = 0
+  xyammHitSound.play().catch((error) => {
+    console.error('Error al reproducir el sonido de impacto de Xyamm:', error)
+  })
+}
+
+// if enemy misses
+if (enemy.isAttacking && enemy.framesCurrent === 2) {
+  enemy.isAttacking = false
+}
+
+}
+
+animate()
 
 window.addEventListener('keydown', (event) => {
   if (!player.dead) {
@@ -334,7 +361,7 @@ window.addEventListener('keyup', (event) => {
       break
   }
 
-  // teclas del enemigo
+  // enemy keys
   switch (event.key) {
     case 'ArrowRight':
       keys.ArrowRight.pressed = false
@@ -344,3 +371,100 @@ window.addEventListener('keyup', (event) => {
       break
   }
 })
+
+// Cargar los sonidos
+const backgroundSound = new Audio('Sound/AbandonedChurch_BW.11598.wav');
+const startGameSound = new Audio('Sound/start-game-sound.wav');
+const hoverTitleSound = new Audio('Sound/Hover-title.wav');
+const buttonHoverSound = new Audio('Sound/botton-hover-sound.wav'); // Sonido para botones
+const celestialAttack1 = new Audio('Sound/Celestial Trash/BRS_Sword_Schwing_Fast_Thin_3.wav'); // Sonido de ataque
+const xyammAttack1 = new Audio('Sound/Xyamm Angel/SwordScrapeRapier_BW.59452.wav'); 
+const celestialHitSound = new Audio('Sound/Celestial Trash/BRS_Flesh_Splat_Beefy_Hit.wav'); // Sonido de impacto
+const xyammHitSound = new Audio('Sound/Xyamm Angel/BRS_Flesh_Squish_Bloody_Juicy_1.wav'); // Sonido de impacto
+// Ajustar el volumen del sonido (rango de 0 a 1)
+backgroundSound.volume = 0.2;
+startGameSound.volume = 0.2;
+hoverTitleSound.volume = 0.2;
+buttonHoverSound.volume = 0.2;
+celestialAttack1.volume = 0.1;
+xyammAttack1.volume = 0.1;
+celestialHitSound.volume = 0.1;
+xyammHitSound.volume = 0.1
+
+// Función para iniciar el juego y el sonido de fondo
+function startGame() {
+  document.getElementById('game-menu').style.display = 'none';
+  document.getElementById('web-container').style.visibility = 'visible';
+
+  backgroundSound.loop = true;
+
+  backgroundSound.play().catch((error) => {
+    console.error('Error al reproducir el sonido de fondo:', error);
+  });
+
+  startGameSound.play().catch((error) => {
+    console.error('Error al reproducir el sonido de inicio:', error);
+  });
+}
+
+// Escucha del evento de clic para comenzar el juego
+document.getElementById('start-game').addEventListener('click', startGame);
+
+// Función para reproducir sonido cuando el mouse pasa sobre el título
+function hoverTitleSoundPlay() {
+  const title = document.querySelector('h1');
+  title.addEventListener('mouseenter', () => {
+    hoverTitleSound.currentTime = 0;
+    hoverTitleSound.play().catch((error) => {
+      console.error('Error al reproducir el sonido de hover sobre el título:', error);
+    });
+  });
+}
+
+// Llamar a la función para agregar el evento hover al título
+hoverTitleSoundPlay();
+
+// Función para hacer sonar el audio al hacer hover sobre cualquier botón
+function buttonHoverSoundPlay() {
+  const buttons = document.querySelectorAll('.menu-item');
+  buttons.forEach(button => {
+    button.addEventListener('mouseenter', () => {
+      buttonHoverSound.currentTime = 0;
+      buttonHoverSound.play().catch((error) => {
+        console.error('Error al reproducir el sonido de hover en el botón:', error);
+      });
+    });
+  });
+}
+
+// Llamar a la función para agregar el evento hover a los botones
+buttonHoverSoundPlay();
+
+// Función para reproducir sonido de ataque celestial al presionar la barra espaciadora
+function celestialAttackOnSpacebar() {
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') { // Verificar si la tecla es la barra espaciadora
+      celestialAttack1.currentTime = 0; // Reiniciar el sonido al inicio
+      celestialAttack1.play().catch((error) => {
+        console.error('Error al reproducir el sonido de ataque celestial:', error);
+      });
+    }
+  });
+}
+
+celestialAttackOnSpacebar();
+
+// Función para reproducir sonido de ataque de xyamm al presionar la flecha abajo
+function xyammAttackOnArrowDown() {
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'ArrowDown') { // Verificar si la tecla es la flecha abajo
+      xyammAttack1.currentTime = 0; // Reiniciar el sonido al inicio
+      xyammAttack1.play().catch((error) => {
+        console.error('Error al reproducir el sonido de ataque xyamm:', error);
+      });
+    }
+  });
+}
+
+// Llamar a la función para escuchar la flecha abajo
+xyammAttackOnArrowDown();
