@@ -370,13 +370,13 @@ window.addEventListener('keyup', (event) => {
 
 // Cargar los sonidos
 const backgroundSound = new Audio('Sound/AbandonedChurch_BW.11598.mp3');
-const startGameSound = new Audio('Sound/start-game-sound.wav');
-const hoverTitleSound = new Audio('Sound/Hover-title.wav');
-const buttonHoverSound = new Audio('Sound/botton-hover-sound.wav'); // Sonido para botones
-const celestialAttack1 = new Audio('Sound/Celestial Trash/BRS_Sword_Schwing_Fast_Thin_3.wav'); // Sonido de ataque
-const xyammAttack1 = new Audio('Sound/Xyamm Angel/SwordScrapeRapier_BW.59452.wav'); 
-const celestialHitSound = new Audio('Sound/Celestial Trash/BRS_Flesh_Splat_Beefy_Hit.wav'); // Sonido de impacto
-const xyammHitSound = new Audio('Sound/Xyamm Angel/BRS_Flesh_Squish_Bloody_Juicy_1.wav'); // Sonido de impacto
+const startGameSound = new Audio('Sound/start-game-sound.mp3');
+const hoverTitleSound = new Audio('Sound/Hover-title.mp3');
+const buttonHoverSound = new Audio('Sound/botton-hover-sound.mp3'); // Sonido para botones
+const celestialAttack1 = new Audio('Sound/Celestial Trash/BRS_Sword_Schwing_Fast_Thin_3.mp3'); // Sonido de ataque
+const xyammAttack1 = new Audio('Sound/Xyamm Angel/Sound/Xyamm Angel/SwordScrapeRapier_BW.59452.mp3'); 
+const celestialHitSound = new Audio('Sound/Celestial Trash/BRS_Flesh_Splat_Beefy_Hit.mp3'); // Sonido de impacto
+const xyammHitSound = new Audio('Sound/Xyamm Angel/BRS_Flesh_Squish_Bloody_Juicy_1.mp3'); // Sonido de impacto
 // Ajustar el volumen del sonido (rango de 0 a 1)
 backgroundSound.volume = 0.2;
 startGameSound.volume = 0.2;
