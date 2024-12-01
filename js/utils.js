@@ -42,7 +42,7 @@ function determineWinner({ player, enemy, timerId }) {
   // Crear enlace adicional
   const additionalLink = document.createElement("a");
   additionalLink.href = "https://example.com"; // Cambia la URL por la que necesites
-  additionalLink.innerText = "Visit Our Website";
+  additionalLink.innerText = "Bionetta Stems";
   additionalLink.style.color = "#818cf8";
   additionalLink.style.textDecoration = "none";
   additionalLink.style.marginTop = "10px";
