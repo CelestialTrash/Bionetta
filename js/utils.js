@@ -11,7 +11,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 }
 
 function determineWinner({ player, enemy, timerId }) {
-  clearTimeout(timerId); // Detener el temporizador si estaba activo
+  clearTimeout(timerId); // Detener el temporizador
 
   const displayText = document.querySelector("#displayText");
   if (!displayText) {
@@ -19,8 +19,9 @@ function determineWinner({ player, enemy, timerId }) {
     return;
   }
 
-  // Mostrar el mensaje del ganador
   displayText.style.display = "flex";
+
+  // Mostrar el mensaje del ganador
   if (player.health === enemy.health) {
     displayText.innerHTML = "Tie";
   } else if (player.health > enemy.health) {
@@ -29,29 +30,31 @@ function determineWinner({ player, enemy, timerId }) {
     displayText.innerHTML = "Player 2 Wins!";
   }
 
-  // Crear botón "Play Again" como un enlace al menú principal
+  // Crear botón "Play Again"
   const playAgainLink = document.createElement("a");
-  playAgainLink.href = "https://bionetta.netlify.app/"; // Cambiar por la URL del menú principal si es diferente
+  playAgainLink.href = "/"; // Cambiar por la URL del menú principal si es diferente
   playAgainLink.innerText = "Play Again";
   playAgainLink.style.color = "#818cf8";
   playAgainLink.style.textDecoration = "none";
   playAgainLink.style.marginTop = "20px";
   playAgainLink.style.fontSize = "18px";
-  playAgainLink.style.cursor = "pointer";
 
   // Crear enlace adicional
   const additionalLink = document.createElement("a");
-  additionalLink.href = "https://example.com"; // Cambiar la URL por la que necesites
-  additionalLink.innerText = "Bionetta Stems";
+  additionalLink.href = "https://example.com"; // Cambia la URL por la que necesites
+  additionalLink.innerText = "Visit Our Website";
   additionalLink.style.color = "#818cf8";
   additionalLink.style.textDecoration = "none";
   additionalLink.style.marginTop = "10px";
   additionalLink.style.fontSize = "16px";
 
-  // Agregar elementos al contenedor de texto
+  // Limpiar contenido anterior y agregar enlaces
+  displayText.innerHTML = "";
   displayText.appendChild(playAgainLink);
   displayText.appendChild(additionalLink);
 }
+
+
 
 let timer = 60; // Temporizador global
 let timerId;

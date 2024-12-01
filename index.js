@@ -1,5 +1,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+let gameOver = false;
+
 
 
 canvas.width = 1024
@@ -168,6 +170,8 @@ const keys = {
 decreaseTimer()
 
 function animate() {
+  if (gameOver) return; // Detener la animación si el juego ha terminado
+
   window.requestAnimationFrame(animate);
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
@@ -232,11 +236,6 @@ function animate() {
     gsap.to("#enemyHealth", {
       width: enemy.health + "%",
     });
-
-    celestialHitSound.currentTime = 0;
-    celestialHitSound.play().catch((error) => {
-      console.error("Error al reproducir el sonido de impacto:", error);
-    });
   }
 
   // Si el ataque del jugador falla
@@ -259,11 +258,6 @@ function animate() {
     gsap.to("#playerHealth", {
       width: player.health + "%",
     });
-
-    xyammHitSound.currentTime = 0;
-    xyammHitSound.play().catch((error) => {
-      console.error("Error al reproducir el sonido de impacto:", error);
-    });
   }
 
   // Si el ataque del enemigo falla
@@ -273,9 +267,16 @@ function animate() {
 
   // Terminar el juego si un jugador pierde toda la salud
   if (enemy.health <= 0 || player.health <= 0) {
+    console.log("Un jugador ha perdido toda la salud. Llamando a determineWinner...");
     determineWinner({ player, enemy, timerId });
+    gameOver = true; // Marcar el juego como terminado
+    return; // Detener la animación
   }
 }
+
+
+
+
 
 animate()
 
@@ -346,7 +347,7 @@ const startGameSound = new Audio('Sound/start-game-sound.mp3');
 const hoverTitleSound = new Audio('Sound/Hover-title.mp3');
 const buttonHoverSound = new Audio('Sound/botton-hover-sound.mp3'); // Sonido para botones
 const celestialAttack1 = new Audio('Sound/Celestial Trash/BRS_Sword_Schwing_Fast_Thin_3.mp3'); // Sonido de ataque
-const xyammAttack1 = new Audio('Sound/Xyamm Angel/Sound/Xyamm Angel/SwordScrapeRapier_BW.59452.mp3'); 
+const xyammAttack1 = new Audio('Sound/Xyamm Angel/SwordScrapeRapier_BW.59452.mp3'); 
 const celestialHitSound = new Audio('Sound/Celestial Trash/BRS_Flesh_Splat_Beefy_Hit.mp3'); // Sonido de impacto
 const xyammHitSound = new Audio('Sound/Xyamm Angel/BRS_Flesh_Squish_Bloody_Juicy_1.mp3'); // Sonido de impacto
 // Ajustar el volumen del sonido (rango de 0 a 1)
@@ -355,7 +356,7 @@ startGameSound.volume = 0.2;
 hoverTitleSound.volume = 0.2;
 buttonHoverSound.volume = 0.2;
 celestialAttack1.volume = 0.1;
-xyammAttack1.volume = 0.1;
+xyammAttack1.volume = 0.2;
 celestialHitSound.volume = 0.1;
 xyammHitSound.volume = 0.1
 
