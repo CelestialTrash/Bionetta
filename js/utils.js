@@ -7,40 +7,67 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
     rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
       rectangle2.position.y &&
     rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-  )
+  );
 }
 
 function determineWinner({ player, enemy, timerId }) {
-  
-  
-  document.querySelector('#displayText').style.display = 'flex'
-  if (player.health === enemy.health) {
-    document.querySelector('#displayText').innerHTML = 'Tie'
-  } else if (player.health > enemy.health) {
-    document.querySelector('#displayText').innerHTML = 'Player 1 Wins!'
-  } else if (player.health < enemy.health) {
-    document.querySelector('#displayText').innerHTML = 'Player 2 Wins!'
+  clearTimeout(timerId); // Detener el temporizador si estaba activo
+
+  const displayText = document.querySelector("#displayText");
+  if (!displayText) {
+    console.error('Elemento "displayText" no encontrado');
+    return;
   }
-  clearTimeout(timerId)
+
+  // Mostrar el mensaje del ganador
+  displayText.style.display = "flex";
+  if (player.health === enemy.health) {
+    displayText.innerHTML = "Tie";
+  } else if (player.health > enemy.health) {
+    displayText.innerHTML = "Player 1 Wins!";
+  } else {
+    displayText.innerHTML = "Player 2 Wins!";
+  }
+
+  // Crear botón "Play Again" como un enlace al menú principal
+  const playAgainLink = document.createElement("a");
+  playAgainLink.href = "https://bionetta.netlify.app/"; // Cambiar por la URL del menú principal si es diferente
+  playAgainLink.innerText = "Play Again";
+  playAgainLink.style.color = "#818cf8";
+  playAgainLink.style.textDecoration = "none";
+  playAgainLink.style.marginTop = "20px";
+  playAgainLink.style.fontSize = "18px";
+  playAgainLink.style.cursor = "pointer";
+
+  // Crear enlace adicional
+  const additionalLink = document.createElement("a");
+  additionalLink.href = "https://example.com"; // Cambiar la URL por la que necesites
+  additionalLink.innerText = "Bionetta Stems";
+  additionalLink.style.color = "#818cf8";
+  additionalLink.style.textDecoration = "none";
+  additionalLink.style.marginTop = "10px";
+  additionalLink.style.fontSize = "16px";
+
+  // Agregar elementos al contenedor de texto
+  displayText.appendChild(playAgainLink);
+  displayText.appendChild(additionalLink);
 }
 
-let timer = 60
-let timerId
+let timer = 60; // Temporizador global
+let timerId;
+
 function decreaseTimer() {
   if (timer > 0) {
-    timerId = setTimeout(decreaseTimer, 1000);
     timer--;
-    
-    const timerElement = document.querySelector('#timer');
+    timerId = setTimeout(decreaseTimer, 1000);
+
+    const timerElement = document.querySelector("#timer");
     if (timerElement) {
       timerElement.innerHTML = timer;
     } else {
-      console.error('Elemento con ID "timer" no encontrado en el DOM.');
+      console.error('Elemento "timer" no encontrado en el DOM.');
     }
-  }
-
-  if (timer === 0) {
-    determineWinner({ player, enemy, timerId });
+  } else {
+    determineWinner({ player, enemy, timerId }); // Llamar a determineWinner al finalizar
   }
 }
-

@@ -168,141 +168,113 @@ const keys = {
 decreaseTimer()
 
 function animate() {
-  window.requestAnimationFrame(animate)
-  c.fillStyle = 'black'
-  c.fillRect(0, 0, canvas.width, canvas.height)
-  background.update()
-  shop.update()
-  c.fillStyle = 'rgba(255, 255, 255, 0.15)'
-  c.fillRect(0, 0, canvas.width, canvas.height)
-  player.update()
-  enemy.update()
+  window.requestAnimationFrame(animate);
+  c.fillStyle = "black";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  background.update();
+  shop.update();
+  c.fillStyle = "rgba(255, 255, 255, 0.15)";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  player.update();
+  enemy.update();
 
-  player.velocity.x = 0
-  enemy.velocity.x = 0
+  player.velocity.x = 0;
+  enemy.velocity.x = 0;
 
-  // player movement
-
-  if (keys.a.pressed && player.lastKey === 'a') {
-    player.velocity.x = -5
-    player.switchSprite('run')
-  } else if (keys.d.pressed && player.lastKey === 'd') {
-    player.velocity.x = 5
-    player.switchSprite('run')
+  // Movimiento del jugador
+  if (keys.a.pressed && player.lastKey === "a") {
+    player.velocity.x = -5;
+    player.switchSprite("run");
+  } else if (keys.d.pressed && player.lastKey === "d") {
+    player.velocity.x = 5;
+    player.switchSprite("run");
   } else {
-    player.switchSprite('idle')
+    player.switchSprite("idle");
   }
 
-  // jumping
+  // Salto del jugador
   if (player.velocity.y < 0) {
-    player.switchSprite('jump')
+    player.switchSprite("jump");
   } else if (player.velocity.y > 0) {
-    player.switchSprite('fall')
+    player.switchSprite("fall");
   }
 
-  // Enemy movement
-  if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-    enemy.velocity.x = -5
-    enemy.switchSprite('run')
-  } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
-    enemy.velocity.x = 5
-    enemy.switchSprite('run')
+  // Movimiento del enemigo
+  if (keys.ArrowLeft.pressed && enemy.lastKey === "ArrowLeft") {
+    enemy.velocity.x = -5;
+    enemy.switchSprite("run");
+  } else if (keys.ArrowRight.pressed && enemy.lastKey === "ArrowRight") {
+    enemy.velocity.x = 5;
+    enemy.switchSprite("run");
   } else {
-    enemy.switchSprite('idle')
+    enemy.switchSprite("idle");
   }
 
-  // jumping
+  // Salto del enemigo
   if (enemy.velocity.y < 0) {
-    enemy.switchSprite('jump')
+    enemy.switchSprite("jump");
   } else if (enemy.velocity.y > 0) {
-    enemy.switchSprite('fall')
+    enemy.switchSprite("fall");
   }
 
-  // detect for collision & enemy gets hit
+  // Detectar colisión y manejar daño al enemigo
   if (
     rectangularCollision({
       rectangle1: player,
-      rectangle2: enemy
+      rectangle2: enemy,
     }) &&
     player.isAttacking &&
     player.framesCurrent === 4
   ) {
-    enemy.takeHit()
-    player.isAttacking = false
+    enemy.takeHit();
+    player.isAttacking = false;
 
-    gsap.to('#enemyHealth', {
-      width: enemy.health + '%'
-    })
+    gsap.to("#enemyHealth", {
+      width: enemy.health + "%",
+    });
 
-    // Reproducir sonido de impacto
-    celestialHitSound.currentTime = 0
+    celestialHitSound.currentTime = 0;
     celestialHitSound.play().catch((error) => {
-      console.error('Error al reproducir el sonido de impacto:', error)
-    })
+      console.error("Error al reproducir el sonido de impacto:", error);
+    });
   }
 
-  // if player misses
+  // Si el ataque del jugador falla
   if (player.isAttacking && player.framesCurrent === 4) {
-    player.isAttacking = false
+    player.isAttacking = false;
   }
 
-  // this is where our player gets hit
-  // detect for collision & enemy gets hit
-if (
-  rectangularCollision({
-    rectangle1: player,
-    rectangle2: enemy
-  }) &&
-  player.isAttacking &&
-  player.framesCurrent === 4
-) {
-  enemy.takeHit()
-  player.isAttacking = false
+  // Detectar colisión y manejar daño al jugador
+  if (
+    rectangularCollision({
+      rectangle1: enemy,
+      rectangle2: player,
+    }) &&
+    enemy.isAttacking &&
+    enemy.framesCurrent === 2
+  ) {
+    player.takeHit();
+    enemy.isAttacking = false;
 
-  gsap.to('#enemyHealth', {
-    width: enemy.health + '%'
-  })
+    gsap.to("#playerHealth", {
+      width: player.health + "%",
+    });
 
-  // Reproducir sonido de impacto de Celestial
-  celestialHitSound.currentTime = 0
-  celestialHitSound.play().catch((error) => {
-    console.error('Error al reproducir el sonido de impacto de Celestial:', error)
-  })
-}
+    xyammHitSound.currentTime = 0;
+    xyammHitSound.play().catch((error) => {
+      console.error("Error al reproducir el sonido de impacto:", error);
+    });
+  }
 
-// if player misses
-if (player.isAttacking && player.framesCurrent === 4) {
-  player.isAttacking = false
-}
+  // Si el ataque del enemigo falla
+  if (enemy.isAttacking && enemy.framesCurrent === 2) {
+    enemy.isAttacking = false;
+  }
 
-// this is where our player gets hit
-if (
-  rectangularCollision({
-    rectangle1: enemy,
-    rectangle2: player
-  }) &&
-  enemy.isAttacking &&
-  enemy.framesCurrent === 2
-) {
-  player.takeHit()
-  enemy.isAttacking = false
-
-  gsap.to('#playerHealth', {
-    width: player.health + '%'
-  })
-
-  // Reproducir sonido de impacto de Xyamm
-  xyammHitSound.currentTime = 0
-  xyammHitSound.play().catch((error) => {
-    console.error('Error al reproducir el sonido de impacto de Xyamm:', error)
-  })
-}
-
-// if enemy misses
-if (enemy.isAttacking && enemy.framesCurrent === 2) {
-  enemy.isAttacking = false
-}
-
+  // Terminar el juego si un jugador pierde toda la salud
+  if (enemy.health <= 0 || player.health <= 0) {
+    determineWinner({ player, enemy, timerId });
+  }
 }
 
 animate()
